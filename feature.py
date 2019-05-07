@@ -1,7 +1,6 @@
 import librosa
 import wave
 import numpy as np
-import scipy
 import torch
 
 sample_rate = 16000

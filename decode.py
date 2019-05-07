@@ -1,7 +1,3 @@
-import Levenshtein as Lev
-import torch
-
-
 class CTCGreedyDecoder(object):
     def __init__(self, vocabulary, blank=0):
         self.vocabulary = vocabulary
