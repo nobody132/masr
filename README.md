@@ -6,25 +6,57 @@
 
 它的设计原则是：
 
-* **开箱即用**：只需要**不到1分钟**（不包括下载的时间），你就使用本项目完成第一次中文语音识别
+* **开箱即用**：只需要**不到5分钟**，你就可以使用本项目完成第一次中文语音识别
 * **接口简洁**
 * **模块化，可扩展**
 
-## 1分钟上手
+## 5分钟上手
 
-1. 请先从[这里](https://pan.baidu.com/s/1i0n1-FrUIUgl5pd-aViEFg)（**提取码：3bcw**）下载预发布版本（**预训练模型**+代码）
+1. 克隆本项目到本地
 
-2. 解压并安装依赖
-
+   ```sh
+   git clone https://github.com/lukhy/masr.git
    ```
-   unzip masr-v0.1.zip
+
+2. 从[这里](https://pan.baidu.com/s/15Up5wxQ6zeitsrqbpovImg)（**提取码：rv7m**）下载**预训练模型**，并将它拷贝到项目的`pretrained`目录下
+
+   ```sh
+   mkdir masr/pretrained
+   cp ~/Downloads/wav2letter.pth masr/pretrained/
    cd masr
+   ```
+
+3. 安装依赖
+
+   ```sh
    pip install -r requirements.txt
    ```
 
-3. 运行示例
+4. 安装`pyaudio`
 
+   macOS
+
+   ```sh
+   brew install portaudio
+   pip install pyaudio
    ```
+
+   Ubuntu
+
+   ```sh
+   sudo apt-get install python-pyaudio python3-pyaudio
+   pip install pyaudio
+   ```
+
+   Windows
+
+   ```sh
+   pip install pyaudio
+   ```
+
+5. 运行示例
+
+   ```sh
    python examples/local-recognize.py
    ```
 
