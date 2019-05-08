@@ -12,7 +12,7 @@
 
 ## 1分钟上手
 
-1. 请先从[这里](https://pan.baidu.com/s/1vyr_TtAGlug0viMlF2VQ7g)下载预发布版本（**预训练模型**+代码）
+1. 请先从[这里](https://pan.baidu.com/s/1i0n1-FrUIUgl5pd-aViEFg)（**提取码：3bcw**）下载预发布版本（**预训练模型**+代码）
 
 2. 解压并安装依赖
 
@@ -60,4 +60,5 @@ model.predict("01.wav") # --> 识别结果（字符串）
 
 #### 其他问题
 
-**除了以上两个问题之外**，如果你还有其他**任何**问题，请新建[issue](https://github.com/lukhy/masr/issues/new)让我知道。
+**除了以上问题之外**，如果你还有其他**任何**问题，请新建[issue](https://github.com/lukhy/masr/issues/new)让我知道。
+
