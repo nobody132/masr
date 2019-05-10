@@ -1,8 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.nn.utils import weight_norm
-from .model import BaseModel
-from decode import CTCGreedyDecoder
+from .base import MASRModel
 import feature
 
 
@@ -21,17 +20,18 @@ class ConvBlock(nn.Module):
         return x
 
 
-class Wav2letter(BaseModel):
+class GatedConv(MASRModel):
     """ This is a model between Wav2letter and Wav2letter++.
         The core block of this model is Gated Convolutional Network"""
 
-    def __init__(self, vocabulary, name="wav2letter"):
+    def __init__(self, vocabulary, blank=0, name="wav2letter"):
         """ vocabulary : str : string of all labels such that vocaulary[0] == ctc_blank  """
-        super(Wav2letter, self).__init__(vocabulary=vocabulary, name=name)
+        super().__init__(vocabulary=vocabulary, name=name)
+        self.blank = blank
+        self.vocabulary = vocabulary
         output_units = len(vocabulary)
-        self.decoder = CTCGreedyDecoder(self.vocabulary)
         modules = []
-        modules.append(ConvBlock(nn.Conv1d(161, 500, 48, 2), 0.2))
+        modules.append(ConvBlock(nn.Conv1d(161, 500, 48, 2, 97), 0.2))
 
         for i in range(7):
             modules.append(ConvBlock(nn.Conv1d(250, 500, 7, 1), 0.4))
@@ -59,5 +59,6 @@ class Wav2letter(BaseModel):
         x_lens = spec.size(-1)
         out = self.cnn(spec)
         out_len = torch.tensor([out.size(-1)])
-        text = self.decoder.decode(out, out_len)
+        text = self.decode(out, out_len)
+        self.train()
         return text[0]
