@@ -4,7 +4,7 @@ from record import record
 
 model = GatedConv.load("pretrained/gated-conv.pth")
 
-record("record.wav")
+record("record.wav", time=5)  # modify time to how long you want
 
 text = model.predict("record.wav")
 

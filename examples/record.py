@@ -17,7 +17,7 @@ def save_wave_file(filename, data):
     wf.close()
 
 
-def record(f):
+def record(f, time=5):
     p = pyaudio.PyAudio()
     stream = p.open(
         format=pyaudio.paInt16,
@@ -29,7 +29,7 @@ def record(f):
     my_buf = []
     count = 0
     print("录音中(5s)")
-    while count < TIME * 3:
+    while count < TIME * time:
         string_audio_data = stream.read(NUM_SAMPLES)
         my_buf.append(string_audio_data)
         count += 1
