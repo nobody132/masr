@@ -19,15 +19,15 @@ class TrainableModel(MASRModel):
         package = {"state_dict": state_dict, "config": config}
         torch.save(package, path)
 
-    def loss(self, *in_outs):  # -> loss: scalar tensor
-        inputs, outputs = in_outs
-        return self._default_loss(*inputs, *outputs)
+    def loss(self, *pred_targets):  # -> loss: scalar tensor
+        preds, targets = pred_targets
+        return self._default_loss(*preds, *targets)
 
     def cer(self, texts, *targets):  # -> cer: float
         return self._default_cer(texts, *targets)
 
     def _default_loss(self, yp, yp_lens, y, y_lens):  # -> ctc_loss: scalar tensor
-        criterion = CTCLoss()
+        criterion = CTCLoss(size_average=True)
         yp = yp.permute(2, 0, 1)  # B * V * T -> T * B * V
         loss = criterion(yp, y, yp_lens, y_lens)
         return loss
@@ -38,6 +38,7 @@ class TrainableModel(MASRModel):
         for text, y_len in zip(texts, y_lens):
             target = y[index : (index + y_len)]
             target = "".join(self.vocabulary[i] for i in target)
+            print(text, target)
             cer += distance(text, target) / len(target)
             index += y_len
         cer /= len(y_lens)
@@ -46,11 +47,15 @@ class TrainableModel(MASRModel):
     def test(self, test_index, batch_size=64):  # -> cer: float
         self.eval()
         test_dataset = data.MASRDataset(test_index, self.vocabulary)
-        test_loader = data.MASRDataLoader(test_dataset, batch_size, shuffle=False)
+        test_loader = data.MASRDataLoader(
+            test_dataset, batch_size, shuffle=False, num_workers=16
+        )
         test_steps = len(test_loader)
         cer = 0
         for inputs, targets in tqdm(test_loader, total=test_steps):
-            outputs = self.forward(*inputs)
+            x, x_lens = inputs
+            x = x.to("cuda")
+            outputs = self.forward(x, x_lens)
             texts = self.decode(*outputs)
             cer += self.cer(texts, *targets)
         cer /= test_steps
@@ -71,25 +76,32 @@ class TrainableModel(MASRModel):
         tensorboard=True,
         quiet=False,
     ):
+        self.to("cuda")
         self.train()
         if tensorboard:
             writer = SummaryWriter()
-        optimizer = optim.SGD(self.parameters(), lr, momentum)
+        optimizer = optim.SGD(self.parameters(), lr, momentum, nesterov=True)
         train_dataset = data.MASRDataset(train_index, self.vocabulary)
-        train_loader = data.MASRDataLoader(
-            train_dataset, train_batch_size, shuffle=True
+        train_loader_shuffle = data.MASRDataLoader(
+            train_dataset, train_batch_size, shuffle=True, num_workers=16
         )
         if sorta_grad:
-            train_loader_sort = data.DataLoader(
-                train_dataset, train_batch_size, shuffle=False
+            train_loader_sort = data.MASRDataLoader(
+                train_dataset, train_batch_size, shuffle=False, num_workers=16
             )
-        train_steps = len(train_loader)
+        train_steps = len(train_loader_shuffle)
         gstep = 0
         for epoch in range(epochs):
             avg_loss = 0
+            if epoch == 0 and sorta_grad:
+                train_loader = train_loader_sort
+            else:
+                train_loader = train_loader_shuffle
             for step, (inputs, targets) in enumerate(train_loader):
+                x, x_lens = inputs
+                x = x.to("cuda")
                 gstep += 1
-                outputs = self.forward(*inputs)
+                outputs = self.forward(x, x_lens)
                 loss = self.loss(outputs, targets)
                 optimizer.zero_grad()
                 loss.backward()

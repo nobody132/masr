@@ -17,6 +17,7 @@ class ConvBlock(nn.Module):
     def forward(self, x):
         x = self.conv(x)
         x = self.act(x)
+        x = self.dropout(x)
         return x
 
 
@@ -24,11 +25,12 @@ class GatedConv(MASRModel):
     """ This is a model between Wav2letter and Wav2letter++.
         The core block of this model is Gated Convolutional Network"""
 
-    def __init__(self, vocabulary, blank=0, name="wav2letter"):
+    def __init__(self, vocabulary, blank=0, name="masr"):
         """ vocabulary : str : string of all labels such that vocaulary[0] == ctc_blank  """
-        super().__init__(vocabulary=vocabulary, name=name)
+        super().__init__(vocabulary=vocabulary, name=name, blank=blank)
         self.blank = blank
         self.vocabulary = vocabulary
+        self.name = name
         output_units = len(vocabulary)
         modules = []
         modules.append(ConvBlock(nn.Conv1d(161, 500, 48, 2, 97), 0.2))
