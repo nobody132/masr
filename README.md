@@ -201,7 +201,7 @@ python examples/demo-client.py
 
 ## 常见问题
 
-如果你有任何问题，请在[issue](issues)区提出来，让我知道。
+如果你有任何问题，请在[issue](https://github.com/lukhy/masr/issues)区提出来，让我知道。
 
 问题包括但不限于：
 
