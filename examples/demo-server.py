@@ -3,9 +3,10 @@ import _init_path
 from models.conv import GatedConv
 import sys
 import json
-import beamdecode
 
 print("Loading model...")
+
+import beamdecode
 
 print("Model loaded")
 

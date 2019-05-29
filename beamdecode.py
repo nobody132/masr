@@ -11,7 +11,7 @@ lm_path = "lm/zh_giga.no_cna_cmn.prune01244.klm"
 cutoff_top_n = 40
 cutoff_prob = 1.0
 beam_width = 32
-num_processes = 8
+num_processes = 4
 blank_index = 0
 
 model = GatedConv.load("pretrained/gated-conv.pth")
