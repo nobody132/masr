@@ -133,7 +133,7 @@ python examples/demo-record-recognize.py
 
 ### 添加语言模型
 
-1. 在你尝试添加语言模型之前，请确认你已经安装了`pyaudio`，参见[识别自己的语音](#识别自己的语音)。
+1. 在你尝试添加语言模型之前，请确认你已经安装了`pyaudio`，参见[识别自己的语音](demo.md)。
 
 2. 同时，你还需要安装Flask，这很简单，`pip install flask`即可。我们需要它来启动识别的web服务。
 

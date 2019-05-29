@@ -6,9 +6,7 @@ import scipy
 import json
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
-import feature
 
-'''
 sample_rate = 16000
 window_size = 0.02
 window_stride = 0.01
@@ -41,7 +39,6 @@ def spectrogram(wav, normalize=True):
         spec = (spec - spec.mean()) / spec.std()
 
     return spec
-'''
 
 
 class MASRDataset(Dataset):
@@ -55,8 +52,8 @@ class MASRDataset(Dataset):
 
     def __getitem__(self, index):
         wav, transcript = self.idx[index]
-        wav = feature.load_audio(wav)
-        spect = feature.spectrogram(wav)
+        wav = load_audio(wav)
+        spect = spectrogram(wav)
         transcript = list(filter(None, [self.vocabulary.get(x) for x in transcript]))
 
         return spect, transcript
