@@ -36,7 +36,7 @@ class GatedConv(MASRModel):
         modules.append(ConvBlock(nn.Conv1d(161, 500, 48, 2, 97), 0.2))
 
         for i in range(7):
-            modules.append(ConvBlock(nn.Conv1d(250, 500, 7, 1), 0.4))
+            modules.append(ConvBlock(nn.Conv1d(250, 500, 7, 1), 0.3))
 
         modules.append(ConvBlock(nn.Conv1d(250, 2000, 32, 1), 0.5))
 
