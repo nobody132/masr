@@ -42,19 +42,21 @@ def spectrogram(wav, normalize=True):
 
 
 class MASRDataset(Dataset):
-    def __init__(self, index_path, vocabulary):
+    def __init__(self, index_path, labels_path):
         with open(index_path) as f:
             idx = f.readlines()
         idx = [x.strip().split(",", 1) for x in idx]
         self.idx = idx
-        self.vocabulary = dict([(vocabulary[i], i) for i in range(len(vocabulary))])
-        self.vocabulary_str = vocabulary
+        with open(labels_path) as f:
+            labels = json.load(f)
+        self.labels = dict([(labels[i], i) for i in range(len(labels))])
+        self.labels_str = labels
 
     def __getitem__(self, index):
         wav, transcript = self.idx[index]
         wav = load_audio(wav)
         spect = spectrogram(wav)
-        transcript = list(filter(None, [self.vocabulary.get(x) for x in transcript]))
+        transcript = list(filter(None, [self.labels.get(x) for x in transcript]))
 
         return spect, transcript
 
@@ -85,14 +87,11 @@ def _collate_fn(batch):
         target_lens[x] = len(target)
         targets.extend(target)
     targets = torch.IntTensor(targets)
-    return (inputs, input_lens), (targets, target_lens)
+    return inputs, targets, input_lens, target_lens
 
 
 class MASRDataLoader(DataLoader):
     def __init__(self, *args, **kwargs):
-        """
-        Creates a data loader for AudioDatasets.
-        """
-        super().__init__(*args, **kwargs)
+        super(MASRDataLoader, self).__init__(*args, **kwargs)
         self.collate_fn = _collate_fn
 
