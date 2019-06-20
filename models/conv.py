@@ -10,7 +10,7 @@ class ConvBlock(nn.Module):
         super().__init__()
         self.conv = conv
         nn.init.kaiming_normal_(self.conv.weight)
-        weight_norm(self.conv)
+        self.conv = weight_norm(self.conv)
         self.act = nn.GLU(1)
         self.dropout = nn.Dropout(p, inplace=True)
 
@@ -50,7 +50,9 @@ class GatedConv(MASRModel):
         x = self.cnn(x)
         for module in self.modules():
             if type(module) == nn.modules.Conv1d:
-                lens = (lens - module.kernel_size[0]) / module.stride[0] + 1
+                lens = (
+                    lens - module.kernel_size[0] + 2 * module.padding[0]
+                ) // module.stride[0] + 1
         return x, lens
 
     def predict(self, path):

@@ -75,7 +75,7 @@ def train(
         writer.add_scalar("loss/epoch", epoch_loss, epoch)
         writer.add_scalar("cer/epoch", cer, epoch)
         print("Epoch {}: Loss= {}, CER = {}".format(epoch, epoch_loss, cer))
-        torch.save(model, "models/v5/casr_v5_1_epoch_{}.pth".format(epoch))
+        torch.save(model, "pretrained/model_{}.pth".format(epoch))
 
 
 def get_lr(optimizer):
