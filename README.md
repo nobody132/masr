@@ -53,6 +53,8 @@ MASR使用的是门控卷积神经网络（Gated Convolutional Network），网�
 
 项目目前提供的预训练模型训练了大约是100个epoch时候的，已经接近最好了。
 
+MASR提供可以直接使用的预训练模型，如果你想自己训练，参见：[训练](#训练)
+
 ## 5分钟上手
 
 使用语言模型会稍微麻烦一些，我们先来一次**不使用语言模型**的识别。但至少让你看到这个项目可以work，对不对？然后我们再一步步加上语言模型。
@@ -133,7 +135,7 @@ python examples/demo-record-recognize.py
 
 ### 添加语言模型
 
-1. 在你尝试添加语言模型之前，请确认你已经安装了`pyaudio`，参见[识别自己的语音](demo.md)。
+1. 在你尝试添加语言模型之前，请确认你已经安装了`pyaudio`，参见[识别自己的语音](#识别自己的语音)。
 
 2. 同时，你还需要安装Flask，这很简单，`pip install flask`即可。我们需要它来启动识别的web服务。
 
@@ -201,9 +203,29 @@ python examples/demo-client.py
 
 接下来，就是见证奇迹的时刻。
 
+## 训练
+
+你可以使用自己的数据集来训练模型。你的数据集需要包含至少以下3个文件：
+
+* train.index
+* dev.index
+* labels.json
+
+train.index和dev.index为索引文件，表示音频文件和标注的对应关系，应具有如下的简单格式：
+
+```
+/path/to/audio/file0.wav,我爱你
+/path/to/audio/file1.wav,你爱我吗
+...
+```
+
+labels.json是字典文件，应包含数据集标注中出现过的所有字符，表示为一个json数组。其中第一个字符必须是无效字符（可任意指定，不和其他字符重复就行），预留给CTC作为blank label。
+
+准备好数据集以后，就可以开始训练了。[examples/train.py](examples/train.py)目前有一些问题，请暂时使用项目根目录的[train.py](/train.py)来训练模型，它提供了训练用的函数，请注意修改预训练模型的保存路径（默认为pretrained/model_{epoch}.pth）。
+
 ## 常见问题
 
-如果你有任何问题，请在[issue](https://github.com/lukhy/masr/issues)区提出来，让我知道。
+如果你有任何问题，请在[issue](https://github.com/lukhy/masr/issues)区提出来，让我知道。issue区也有很多热心的小伙伴，可以帮你解决问题。
 
 问题包括但不限于：
 

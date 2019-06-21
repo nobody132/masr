@@ -22,7 +22,7 @@ class ConvBlock(nn.Module):
 
 
 class GatedConv(MASRModel):
-    """ This is a model between Wav2letter and Wav2letter++.
+    """ This is a model between Wav2letter and Gated Convnets.
         The core block of this model is Gated Convolutional Network"""
 
     def __init__(self, vocabulary, blank=0, name="masr"):
