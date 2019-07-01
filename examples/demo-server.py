@@ -13,13 +13,6 @@ print("Model loaded")
 app = Flask(__name__)
 
 
-@app.route("/", methods=["GET"])
-def index():
-    with open("examples/record.html") as f:
-        html = f.read()
-    return html
-
-
 @app.route("/recognize", methods=["POST"])
 def recognize():
     f = request.files["file"]
