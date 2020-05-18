@@ -1,0 +1,12 @@
+*
+!examples
+!models
+!*.py
+!.gitignore
+!*.md
+!requirements.txt
+!docs/
+!images
+!*.svg
+!*.png
+!LICENSE*
